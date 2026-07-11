@@ -91,15 +91,14 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     elif data.startswith("buy_"):
+        duration = data.replace("buy_", "")
 
-    duration = data.replace("buy_", "")
-
-    await query.edit_message_text(
-        f"✅ Selected Duration: {duration}\n\n"
-        "💳 Payment Details\n"
-        "UPI: yourupi@upi\n\n"
-        "Payment karne ke baad UTR number bheje."
-    )
+        await query.edit_message_text(
+            f"✅ Selected Duration: {duration}\n\n"
+            "💳 Payment Details\n"
+            f"UPI: {UPI_ID}\n\n"
+            "Payment karne ke baad UTR number bheje."
+        )
 
 def main():
 
