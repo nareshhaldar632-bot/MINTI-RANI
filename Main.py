@@ -91,14 +91,16 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     elif data.startswith("buy_"):
-        duration = data.replace("buy_", "")
+    duration = data.replace("buy_", "")
 
-        await query.edit_message_text(
-            f"✅ Selected Duration: {duration}\n\n"
-            "💳 Payment Details\n"
-            f"UPI: {UPI_ID}\n\n"
-            "Payment karne ke baad UTR number bheje."
-        )
+    await query.message.reply_photo(
+        photo=open(QR_IMAGE, "rb"),
+        caption=
+        f"✅ Selected Duration: {duration}\n\n"
+        f"💳 Payment Details\n"
+        f"UPI: {UPI_ID}\n\n"
+        "Payment karne ke baad UTR number bheje."
+    )
 
 def main():
 
