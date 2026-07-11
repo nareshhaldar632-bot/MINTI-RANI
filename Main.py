@@ -91,7 +91,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     elif data.startswith("buy_"):
-    duration = data.replace("buy_", "")
+        duration = data.replace("buy_", "")
 
     await query.message.reply_photo(
         photo=open(QR_IMAGE, "rb"),
