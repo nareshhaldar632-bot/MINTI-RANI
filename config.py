@@ -1,0 +1,9 @@
+BOT_TOKEN = "YAHAN_APNA_BOT_TOKEN_DALO"
+
+ADMIN_ID = 123456789
+
+QR_IMAGE = "qr.png"
+
+CHANNEL_URL = "https://t.me/YOUR_CHANNEL"
+
+UPI_ID = "yourupi@upi"
