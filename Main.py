@@ -1,3 +1,4 @@
+from config import BOT_TOKEN, QR_IMAGE, UPI_ID
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
@@ -89,7 +90,16 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(buttons)
         )
 
+        elif data.startswith("buy_"):
 
+        duration = data.replace("buy_", "")
+
+        await query.edit_message_text(
+            f"✅ Selected Duration: {duration}\n\n"
+            "💳 Payment Details:\n"
+            "UPI: yourupi@upi\n\n"
+            "Payment karne ke baad UTR number bheje."
+        )
 
 def main():
 
