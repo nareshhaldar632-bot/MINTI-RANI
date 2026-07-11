@@ -41,32 +41,11 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    if query.data == "products":
+    data = query.data
 
-    elif query.data.startswith("product_"):
 
-    product_id = query.data.replace(
-        "product_",
-        ""
-    )
-
-    buttons = []
-
-    for duration, price in DURATIONS.items():
-
-        buttons.append(
-            [
-                InlineKeyboardButton(
-                    f"{duration} - ₹{price}",
-                    callback_data=f"buy_{duration}"
-                )
-            ]
-        )
-
-    await query.edit_message_text(
-        f"Select Duration for {product_id}:",
-        reply_markup=InlineKeyboardMarkup(buttons)
-    )
+    # Product list
+    if data == "products":
 
         buttons = []
 
@@ -86,6 +65,32 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
+    # Duration list
+    elif data.startswith("product_"):
+
+        product_id = data.replace("product_", "")
+
+        buttons = []
+
+        for duration, price in DURATIONS.items():
+
+            buttons.append(
+                [
+                    InlineKeyboardButton(
+                        f"{duration} - ₹{price}",
+                        callback_data=f"buy_{duration}"
+                    )
+                ]
+            )
+
+
+        await query.edit_message_text(
+            f"Select Duration for {product_id}:",
+            reply_markup=InlineKeyboardMarkup(buttons)
+        )
+
+
+
 def main():
 
     create_tables()
@@ -93,21 +98,18 @@ def main():
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(
-        CommandHandler(
-            "start",
-            start
-        )
+        CommandHandler("start", start)
     )
 
     app.add_handler(
-        CallbackQueryHandler(
-            button
-        )
+        CallbackQueryHandler(button)
     )
+
 
     print("Bot Started")
 
     app.run_polling()
+
 
 
 if __name__ == "__main__":
