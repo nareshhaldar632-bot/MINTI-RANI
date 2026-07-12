@@ -1,19 +1,23 @@
-from config import BOT_TOKEN, QR_IMAGE, UPI_ID
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from config import BOT_TOKEN, ADMIN_ID, QR_IMAGE, UPI_ID
+from database import *
+from products import PRODUCTS, DURATIONS
+
+from telegram import (
+    Update,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+)
+
 from telegram.ext import (
     Application,
     CommandHandler,
     CallbackQueryHandler,
-    ContextTypes
+    MessageHandler,
+    ContextTypes,
+    filters,
 )
 
-from config import BOT_TOKEN
-from database import create_tables, add_user
-from products import PRODUCTS, DURATIONS
-
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
     user = update.effective_user
 
     add_user(
@@ -23,105 +27,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     keyboard = [
-        [
-            InlineKeyboardButton(
-                "🛒 Products",
-                callback_data="products"
-            )
-        ]
+        [InlineKeyboardButton("🛒 Products", callback_data="products")],
+        [InlineKeyboardButton("📞 Contact Admin", url="https://t.me/YOUR_USERNAME")],
+        [InlineKeyboardButton("📢 Join Channel", url="https://t.me/YOUR_CHANNEL")]
     ]
 
     await update.message.reply_text(
-        "🔥 Welcome to Nandu Global Key Store 🔥",
+        "🔥 Welcome to Global Auto Key Store 🔥",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
-
-
-async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    query = update.callback_query
-    await query.answer()
-
-    data = query.data
-
-
-    # Product list
-    if data == "products":
-
-        buttons = []
-
-        for product in PRODUCTS:
-            buttons.append(
-                [
-                    InlineKeyboardButton(
-                        product["name"],
-                        callback_data=f"product_{product['id']}"
-                    )
-                ]
-            )
-
-        await query.edit_message_text(
-            "🛒 Select Product:",
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
-
-
-    # Duration list
-    elif data.startswith("product_"):
-
-        product_id = data.replace("product_", "")
-
-        buttons = []
-
-        for duration, price in DURATIONS.items():
-
-            buttons.append(
-                [
-                    InlineKeyboardButton(
-                        f"{duration} - ₹{price}",
-                        callback_data=f"buy_{duration}"
-                    )
-                ]
-            )
-
-
-        await query.edit_message_text(
-            f"Select Duration for {product_id}:",
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
-
-    elif data.startswith("buy_"):
-        duration = data.replace("buy_", "")
-
-    await query.message.reply_photo(
-        photo=open(QR_IMAGE, "rb"),
-        caption=
-        f"✅ Selected Duration: {duration}\n\n"
-        f"💳 Payment Details\n"
-        f"UPI: {UPI_ID}\n\n"
-        "Payment karne ke baad UTR number bheje."
-    )
-
-def main():
-
-    create_tables()
-
-    app = Application.builder().token(BOT_TOKEN).build()
-
-    app.add_handler(
-        CommandHandler("start", start)
-    )
-
-    app.add_handler(
-        CallbackQueryHandler(button)
-    )
-
-
-    print("Bot Started")
-
-    app.run_polling()
-
-
-
-if __name__ == "__main__":
-    main()
